@@ -34,13 +34,13 @@ export default function LoginPage() {
           <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
             <defs>
               <pattern id="grid-pattern" width="40" height="40" patternUnits="userSpaceOnUse">
-                <path d="M0 40L40 0H20L0 20M40 40V20L20 40" stroke="currentColor" strokeWidth="2" fill="none"/>
+                <path d="M0 40L40 0H20L0 20M40 40V20L20 40" stroke="currentColor" strokeWidth="2" fill="none" />
               </pattern>
             </defs>
-            <rect width="100%" height="100%" fill="url(#grid-pattern)"/>
+            <rect width="100%" height="100%" fill="url(#grid-pattern)" />
           </svg>
         </div>
-        
+
         <div className="relative z-10 text-white max-w-lg">
           <h1 className="text-5xl font-bold mb-6 leading-tight">Sistem Point of Sales</h1>
           <p className="text-lg text-indigo-100/90 leading-relaxed">

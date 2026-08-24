@@ -6,6 +6,7 @@ export const menuData = [
     kategori_id: "ktg-001",
     kategori_nama: "Makanan",
     status: true,
+    foto: 'https://assets.unileversolutions.com/recipes-v3/258064-default.jpg?im=AspectCrop=(720,459);Resize=(720,459)',
     createdAt: "2026-05-01",
   },
   {
@@ -15,6 +16,7 @@ export const menuData = [
     kategori_id: "ktg-001",
     kategori_nama: "Makanan",
     status: true,
+    foto: 'https://mc.tanahbumbukab.go.id/wp-content/uploads/2025/02/WhatsApp-Image-2025-02-11-at-17.49.51-1920x1440.jpeg',
     createdAt: "2026-05-01",
   },
   {
@@ -24,6 +26,7 @@ export const menuData = [
     kategori_id: "ktg-001",
     kategori_nama: "Makanan",
     status: true,
+    foto: 'https://i0.wp.com/resepkoki.id/wp-content/uploads/2017/11/Resep-Ayam-bakar-bumbu-bali.jpg?fit=1742%2C1887&ssl=1',
     createdAt: "2026-05-02",
   },
   {
@@ -33,6 +36,7 @@ export const menuData = [
     kategori_id: "ktg-002",
     kategori_nama: "Minuman",
     status: true,
+    foto: 'https://www.astronauts.id/blog/wp-content/uploads/2023/03/Beberapa-Resep-Es-Teh-Manis-Yang-Enggak-Ngebosenin-Untuk-Buka-Puasa.jpg',
     createdAt: "2026-05-02",
   },
   {
@@ -42,6 +46,7 @@ export const menuData = [
     kategori_id: "ktg-002",
     kategori_nama: "Minuman",
     status: true,
+    foto: 'https://cdn0-production-images-kly.akamaized.net/w7tWIKIWVAl4s3hTSbakSdKqiOA=/0x0:1000x563/500x281/filters:quality(75):strip_icc():format(webp)/kly-media-production/medias/4659340/original/053837600_1700672532-shutterstock_2297180289.jpg',
     createdAt: "2026-05-03",
   },
   {
@@ -51,6 +56,7 @@ export const menuData = [
     kategori_id: "ktg-003",
     kategori_nama: "Snack",
     status: true,
+    foto: 'https://cdn0-production-images-kly.akamaized.net/j5gE9hDy1k0Kk7m-MGAbmVG9dJ8=/1200x675/smart/filters:quality(75):strip_icc():format(jpeg)/kly-media-production/medias/970871/original/021248500_1440846143-header_chiantilvpa_com.jpg',
     createdAt: "2026-05-03",
   },
   {
@@ -60,6 +66,7 @@ export const menuData = [
     kategori_id: "ktg-004",
     kategori_nama: "Dessert",
     status: false,
+    foto: 'https://upload.wikimedia.org/wikipedia/commons/c/c2/Pisangcokelat.jpg',
     createdAt: "2026-05-04",
   },
 ];

@@ -15,6 +15,15 @@ export default function Navbar({ onMenuClick }: NavbarProps) {
     const dropdownRef = useRef<HTMLDivElement>(null);
     const router = useRouter();
     const logout = useAuthStore((state) => state.logout);
+    const user = useAuthStore((state) => state.user);
+
+    const displayName = user?.name || "Admin POS";
+    const initials = displayName
+        .split(" ")
+        .map((n) => n[0])
+        .join("")
+        .substring(0, 2)
+        .toUpperCase();
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
@@ -59,11 +68,11 @@ export default function Navbar({ onMenuClick }: NavbarProps) {
                         className="flex items-center gap-3 hover:bg-gray-50 p-1 rounded-lg transition-colors"
                     >
                         <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white text-xs font-bold">
-                            PA
+                            {initials || "AD"}
                         </div>
                         <div className="hidden sm:block text-left">
-                            <p className="text-sm font-semibold text-gray-800 leading-none">Pantat Ayam</p>
-                            <p className="text-[10px] text-gray-500 mt-1">Administrator</p>
+                            <p className="text-sm font-semibold text-gray-800 leading-none">{displayName}</p>
+                            <p className="text-[10px] text-gray-500 mt-1">{user?.username ? `@${user.username}` : "Administrator"}</p>
                         </div>
                         <ChevronDown size={14} className={`text-gray-400 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
                     </button>

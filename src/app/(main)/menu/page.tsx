@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 
 import { menuData } from "@/data/menuData";
+import { MenuData } from "@/types";
 
 export default function Page() {
     const [addModal, setAddModal] = useState(false);
@@ -19,10 +20,10 @@ export default function Page() {
     const [deleteOpen, setDeleteOpen] = useState(false);
     const [detailModal, setDetailModal] = useState(false);
     
-    const [selectedProduct, setSelectedProduct] = useState<any>(null);
-    const [openDropdownId, setOpenDropdownId] = useState<any>(null);
+    const [selectedProduct, setSelectedProduct] = useState<MenuData | null>(null);
+    const [openDropdownId, setOpenDropdownId] = useState<string | null>(null);
 
-    const toggleDropdown = (id: any) => {
+    const toggleDropdown = (id: string) => {
         setOpenDropdownId(openDropdownId === id ? null : id);
     };
 
@@ -31,17 +32,17 @@ export default function Page() {
         setAddModal(true);
     };
 
-    const openEdit = (item: any) => {
+    const openEdit = (item: MenuData) => {
         setSelectedProduct(item);
         setEditModal(true);
     };
 
-    const openDeleteModal = (item: any) => {
+    const openDeleteModal = (item: MenuData) => {
         setSelectedProduct(item);
         setDeleteOpen(true);
     };
 
-    const openDetail = (item: any) => {
+    const openDetail = (item: MenuData) => {
         setSelectedProduct(item);
         setDetailModal(true);
     };
@@ -50,7 +51,7 @@ export default function Page() {
         <div className="space-y-6 pb-10 min-h-screen">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
-                    <h1 className="text-2xl font-bold text-gray-800">Produk</h1>
+                    <h1 className="text-2xl font-bold text-gray-800">Menu</h1>
                 </div>
 
                 <button onClick={() => openAdd()} className="flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-lg text-sm font-semibold shadow-md transition-all active:scale-95">
@@ -62,22 +63,32 @@ export default function Page() {
             <div className="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden">
                 <div className="p-0">
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 p-6 bg-gray-50/50">
-                        {menuData.map((data: any) => (
+                        {menuData.map((data: MenuData) => (
                             <div key={data.id} className="bg-white border border-gray-200 rounded-2xl shadow-sm hover:shadow-lg transition-all relative overflow-hidden group flex flex-col">
                                 {/* Gambar & Badge Top */}
                                 <div className="relative h-48 w-full bg-gray-100">
                                     <img
-                                        src={data.foto || "/placeholder-image.jpg"}
-                                        alt={data.nama || data.uraian_kategori}
+                                        src={data.foto}
+                                        alt={data.nama_menu}
                                         className="w-full h-full object-cover"
                                     />
                                     <div className="absolute top-3 left-3">
                                         <span className="bg-white/90 backdrop-blur-sm text-gray-800 text-[10px] font-bold px-2.5 py-1.5 rounded-md shadow-sm uppercase tracking-wider">
-                                            {data.kategori || "Kategori"}
+                                            {data.kategori_nama || "Kategori"}
+                                        </span>
+                                    </div>
+
+                                    <div className="absolute bottom-3 left-3">
+                                        <span className={`backdrop-blur-md text-[10px] font-bold px-2.5 py-1.5 rounded-md shadow-sm uppercase tracking-wider flex items-center gap-1.5 ${
+                                            data.status === true 
+                                            ? 'bg-green-100/90 text-green-700' 
+                                            : 'bg-red-100/90 text-red-700'
+                                        }`}>
+                                            <span className={`w-1.5 h-1.5 rounded-full ${data.status === true ? 'bg-green-500' : 'bg-red-500'}`}></span>
+                                            {data.status === true ? 'Tersedia' : 'Tidak Tersedia'}
                                         </span>
                                     </div>
                                     
-                                    {/* Dropdown Menu Toggle */}
                                     <div className="absolute top-3 right-3">
                                         <div className="relative">
                                             <button
@@ -124,32 +135,13 @@ export default function Page() {
                                     </div>
                                 </div>
 
-                                {/* Konten Bawah */}
                                 <div className="p-5 flex-grow flex flex-col">
-                                    <div className="mb-1 text-[10px] font-bold text-blue-600 uppercase tracking-wider">
-                                        {data.brand || "Brand"}
-                                    </div>
-                                    <h3 className="text-base font-bold text-gray-800 leading-snug mb-2 line-clamp-2">
-                                        {data.nama || data.uraian_kategori}
+                                    <h3 className={`text-base font-bold leading-snug mb-2 line-clamp-2 ${data.status === true ? 'text-gray-800' : 'text-gray-400'}`}>
+                                        {data.nama_menu}
                                     </h3>
-                                    <p className="text-[11px] text-gray-500 line-clamp-2 mb-4 text-justify leading-relaxed">
-                                        {data.keterangan || "Tidak ada keterangan."}
-                                    </p>
-                                    
                                     <div className="mt-auto">
-                                        <div className="text-xl font-black text-gray-900 mb-4">
-                                            Rp{(data.harga_jual || 0).toLocaleString("id-ID")}
-                                        </div>
-                                        
-                                        <div className="grid grid-cols-2 gap-3 pt-4 border-t border-gray-100">
-                                            <div className="flex flex-col bg-gray-50 rounded-lg p-2 items-center">
-                                                <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Terjual</span>
-                                                <span className="text-sm font-bold text-gray-800">{data.penjualan || 0}</span>
-                                            </div>
-                                            <div className="flex flex-col bg-blue-50 rounded-lg p-2 items-center">
-                                                <span className="text-[10px] font-bold text-blue-400 uppercase tracking-wider mb-1">Sisa Stok</span>
-                                                <span className="text-sm font-bold text-blue-700">{data.stok || 0}</span>
-                                            </div>
+                                        <div className={`text-xl font-black mb-4 ${data.status === true ? 'text-gray-900' : 'text-gray-400 line-through'}`}>
+                                            Rp{(data.harga || 0).toLocaleString("id-ID")}
                                         </div>
                                     </div>
                                 </div>
@@ -187,72 +179,33 @@ export default function Page() {
 
                             <form className="p-6 space-y-4 max-h-[80vh] overflow-y-auto">
                                 <div>
-                                    <label className="block text-[10px] font-black text-gray-400 uppercase mb-1 tracking-wider">Nama Produk</label>
+                                    <label className="block text-[10px] font-black text-gray-400 uppercase mb-1 tracking-wider">Kategori</label>
+                                    <select
+                                        defaultValue={selectedProduct?.kategori_id || ''}
+                                    className="w-full px-4 py-2 bg-gray-50 text-gray-900 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none text-sm transition-all"
+                                    >
+                                        <option value="">Pilih Kategori</option>
+                                        <option value="1">Makanan</option>
+                                        <option value="2">Minuman</option>
+                                        <option value="3">Snack</option>
+                                        <option value="4">Desert</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label className="block text-[10px] font-black text-gray-400 uppercase mb-1 tracking-wider">Nama Menu</label>
                                     <input
                                         type="text"
-                                        placeholder="Masukkan nama produk..."
-                                        defaultValue={selectedProduct?.nama || selectedProduct?.uraian_kategori || ''}
-                                        className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none text-sm transition-all"
+                                        defaultValue={selectedProduct?.nama_menu || ''}
+                                        className="w-full px-4 py-2 bg-gray-50 text-gray-900 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none text-sm transition-all"
                                     />
                                 </div>
-
-                                <div className="grid grid-cols-2 gap-4">
-                                    <div>
-                                        <label className="block text-[10px] font-black text-gray-400 uppercase mb-1 tracking-wider">Kategori</label>
-                                        <select
-                                            defaultValue={selectedProduct?.kategori_id || ''}
-                                            className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none text-sm transition-all"
-                                        >
-                                            <option value="">Pilih Kategori</option>
-                                            <option value="1">Sepatu</option>
-                                            <option value="2">Racket</option>
-                                            <option value="3">Jersey</option>
-                                        </select>
-                                    </div>
-
-                                    <div>
-                                        <label className="block text-[10px] font-black text-gray-400 uppercase mb-1 tracking-wider">Brand</label>
-                                        <select
-                                            defaultValue={selectedProduct?.brand_id || ''}
-                                            className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none text-sm transition-all"
-                                        >
-                                            <option value="">Pilih Brand</option>
-                                            <option value="1">Yonex</option>
-                                            <option value="2">Lining</option>
-                                            <option value="3">Victor</option>
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <div className="grid grid-cols-2 gap-4">
-                                    <div>
-                                        <label className="block text-[10px] font-black text-gray-400 uppercase mb-1 tracking-wider">Harga Jual (Rp)</label>
-                                        <input
-                                            type="number"
-                                            placeholder="0"
-                                            defaultValue={selectedProduct?.harga_jual || ''}
-                                            className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none text-sm transition-all"
-                                        />
-                                    </div>
-
-                                    <div>
-                                        <label className="block text-[10px] font-black text-gray-400 uppercase mb-1 tracking-wider">Stok Awal</label>
-                                        <input
-                                            type="number"
-                                            placeholder="0"
-                                            defaultValue={selectedProduct?.stok || ''}
-                                            className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none text-sm transition-all"
-                                        />
-                                    </div>
-                                </div>
-
                                 <div>
-                                    <label className="block text-[10px] font-black text-gray-400 uppercase mb-1 tracking-wider">Keterangan Produk</label>
-                                    <textarea
-                                        rows="3"
-                                        defaultValue={selectedProduct?.keterangan || ''}
-                                        className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none text-sm transition-all resize-none"
-                                    ></textarea>
+                                    <label className="block text-[10px] font-black text-gray-400 uppercase mb-1 tracking-wider">Harga</label>
+                                    <input
+                                        type="number"
+                                        defaultValue={selectedProduct?.harga || ''}
+                                        className="w-full px-4 py-2 bg-gray-50 text-gray-900 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none text-sm transition-all"
+                                    />
                                 </div>
 
                                 <div>
@@ -261,8 +214,20 @@ export default function Page() {
                                         type="text"
                                         placeholder="https://..."
                                         defaultValue={selectedProduct?.foto || ''}
-                                        className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none text-sm transition-all"
+                                    className="w-full px-4 py-2 bg-gray-50 text-gray-900 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none text-sm transition-all"
                                     />
+                                </div>
+
+                                {/* TAMBAHAN: Pilih Status di Form */}
+                                <div>
+                                    <label className="block text-[10px] font-black text-gray-400 uppercase mb-1 tracking-wider">Status Menu</label>
+                                    <select
+                                        defaultValue={selectedProduct?.status === false ? 'false' : 'true'}
+                                    className="w-full px-4 py-2 bg-gray-50 text-gray-900 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none text-sm transition-all"
+                                    >
+                                        <option value="true">Aktif</option>
+                                        <option value="false">Tidak Tersedia</option>
+                                    </select>
                                 </div>
 
                                 <div className="flex gap-3 pt-4 border-t border-gray-50">
@@ -299,72 +264,33 @@ export default function Page() {
 
                             <form className="p-6 space-y-4 max-h-[80vh] overflow-y-auto">
                                 <div>
-                                    <label className="block text-[10px] font-black text-gray-400 uppercase mb-1 tracking-wider">Nama Produk</label>
+                                    <label className="block text-[10px] font-black text-gray-400 uppercase mb-1 tracking-wider">Kategori</label>
+                                    <select
+                                        defaultValue={selectedProduct?.kategori_id || ''}
+                                    className="w-full px-4 py-2 bg-gray-50 text-gray-900 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none text-sm transition-all"
+                                    >
+                                        <option value="">Pilih Kategori</option>
+                                        <option value="1">Makanan</option>
+                                        <option value="2">Minuman</option>
+                                        <option value="3">Snack</option>
+                                        <option value="4">Desert</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label className="block text-[10px] font-black text-gray-400 uppercase mb-1 tracking-wider">Nama Menu</label>
                                     <input
                                         type="text"
-                                        placeholder="Masukkan nama produk..."
-                                        defaultValue={selectedProduct?.nama || selectedProduct?.uraian_kategori || ''}
-                                        className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none text-sm transition-all"
+                                        defaultValue={selectedProduct?.nama_menu || ''}
+                                        className="w-full px-4 py-2 bg-gray-50 text-gray-900 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none text-sm transition-all"
                                     />
                                 </div>
-
-                                <div className="grid grid-cols-2 gap-4">
-                                    <div>
-                                        <label className="block text-[10px] font-black text-gray-400 uppercase mb-1 tracking-wider">Kategori</label>
-                                        <select
-                                            defaultValue={selectedProduct?.kategori_id || ''}
-                                            className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none text-sm transition-all"
-                                        >
-                                            <option value="">Pilih Kategori</option>
-                                            <option value="1">Sepatu</option>
-                                            <option value="2">Racket</option>
-                                            <option value="3">Jersey</option>
-                                        </select>
-                                    </div>
-
-                                    <div>
-                                        <label className="block text-[10px] font-black text-gray-400 uppercase mb-1 tracking-wider">Brand</label>
-                                        <select
-                                            defaultValue={selectedProduct?.brand_id || ''}
-                                            className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none text-sm transition-all"
-                                        >
-                                            <option value="">Pilih Brand</option>
-                                            <option value="1">Yonex</option>
-                                            <option value="2">Lining</option>
-                                            <option value="3">Victor</option>
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <div className="grid grid-cols-2 gap-4">
-                                    <div>
-                                        <label className="block text-[10px] font-black text-gray-400 uppercase mb-1 tracking-wider">Harga Jual (Rp)</label>
-                                        <input
-                                            type="number"
-                                            placeholder="0"
-                                            defaultValue={selectedProduct?.harga_jual || ''}
-                                            className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none text-sm transition-all"
-                                        />
-                                    </div>
-
-                                    <div>
-                                        <label className="block text-[10px] font-black text-gray-400 uppercase mb-1 tracking-wider">Stok Awal</label>
-                                        <input
-                                            type="number"
-                                            placeholder="0"
-                                            defaultValue={selectedProduct?.stok || ''}
-                                            className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none text-sm transition-all"
-                                        />
-                                    </div>
-                                </div>
-
                                 <div>
-                                    <label className="block text-[10px] font-black text-gray-400 uppercase mb-1 tracking-wider">Keterangan Produk</label>
-                                    <textarea
-                                        rows="3"
-                                        defaultValue={selectedProduct?.keterangan || ''}
-                                        className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none text-sm transition-all resize-none"
-                                    ></textarea>
+                                    <label className="block text-[10px] font-black text-gray-400 uppercase mb-1 tracking-wider">Harga</label>
+                                    <input
+                                        type="number"
+                                        defaultValue={selectedProduct?.harga || ''}
+                                        className="w-full px-4 py-2 bg-gray-50 text-gray-900 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none text-sm transition-all"
+                                    />
                                 </div>
 
                                 <div>
@@ -373,14 +299,26 @@ export default function Page() {
                                         type="text"
                                         placeholder="https://..."
                                         defaultValue={selectedProduct?.foto || ''}
-                                        className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none text-sm transition-all"
+                                    className="w-full px-4 py-2 bg-gray-50 text-gray-900 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none text-sm transition-all"
                                     />
+                                </div>
+
+                                {/* TAMBAHAN: Pilih Status di Form */}
+                                <div>
+                                    <label className="block text-[10px] font-black text-gray-400 uppercase mb-1 tracking-wider">Status Menu</label>
+                                    <select
+                                        defaultValue={selectedProduct?.status === false ? 'false' : 'true'}
+                                    className="w-full px-4 py-2 bg-gray-50 text-gray-900 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none text-sm transition-all"
+                                    >
+                                        <option value="true">Aktif</option>
+                                        <option value="false">Tidak Tersedia</option>
+                                    </select>
                                 </div>
 
                                 <div className="flex gap-3 pt-4 border-t border-gray-50">
                                     <button
                                         type="button"
-                                        onClick={() => setEditModal(false)}
+                                        onClick={() => setAddModal(false)}
                                         className="flex-1 px-4 py-2.5 border border-gray-200 text-gray-600 rounded-lg text-sm font-bold hover:bg-gray-50 transition-all"
                                     >
                                         Batal
@@ -449,9 +387,13 @@ export default function Page() {
                                     <span className="bg-blue-100 text-blue-700 text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider">
                                         {selectedProduct?.kategori || "Kategori"}
                                     </span>
-                                    <span className="bg-gray-100 text-gray-600 text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider">
-                                        {selectedProduct?.brand || "Brand"}
+                                    {/* === TAMBAHAN: STATUS DI DETAIL === */}
+                                    <span className={`text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider ${
+                                        selectedProduct?.status === true ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
+                                    }`}>
+                                        {selectedProduct?.status === true ? 'Aktif' : 'Tidak Tersedia'}
                                     </span>
+                                    {/* ================================ */}
                                 </div>
                                 <h2 className="text-xl font-bold text-gray-900 mb-2">
                                     {selectedProduct?.nama || selectedProduct?.uraian_kategori}

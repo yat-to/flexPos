@@ -6,7 +6,14 @@ import { useAuthStore } from '@/store/authStore';
 import toast, { Toaster } from 'react-hot-toast';
 
 export default function Page() {
-    const { list_kategori, jml_data, fetchKategori, addKategori, editKategori, deleteKategori, loading, error } = useAuthStore();
+    const list_kategori = useAuthStore((state) => state.list_kategori);
+    const jml_data = useAuthStore((state) => state.jml_data);
+    const loading = useAuthStore((state) => state.loading);
+    const error = useAuthStore((state) => state.error);
+    const fetchKategori = useAuthStore((state) => state.fetchKategori);
+    const addKategori = useAuthStore((state) => state.addKategori);
+    const editKategori = useAuthStore((state) => state.editKategori);
+    const deleteKategori = useAuthStore((state) => state.deleteKategori);
 
     // paginasi
     const [page_first, setPageFirst] = useState(1);
@@ -62,7 +69,8 @@ export default function Page() {
 
     useEffect(() => {
         fetchKategori(page_first, "");
-    }, [page_first, fetchKategori]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [page_first]);
 
     const handleAdd = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -72,7 +80,7 @@ export default function Page() {
                 toast.success('Sukses Tambah Data!');
                 fetchKategori(page_first, "");
             }
-        } catch (err) {
+        } catch {
             toast.error('Gagal menambah data'); // Notif Gagal
         }
     }
@@ -85,7 +93,7 @@ export default function Page() {
                 toast.success('Sukses Edit Data!');
                 fetchKategori(page_first, "");
             }
-        } catch (err) {
+        } catch {
             toast.error('Gagal memperbarui data');
         }
     }
@@ -249,7 +257,7 @@ export default function Page() {
                                     value={form.uraian}
                                     onChange={(e) => setForm({ ...form, uraian: e.target.value })}
                                     required
-                                    className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none text-sm transition-all"
+                                    className="w-full px-4 py-2 bg-gray-50 text-gray-900 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none text-sm transition-all"
                                 />
                             </div>
 
@@ -290,7 +298,7 @@ export default function Page() {
                             <div>
                                 <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Uraian</label>
                                 <input type="text" required value={form.uraian} onChange={(e) => setForm({ ...form, uraian: e.target.value })}
-                                    className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none text-sm transition-all"
+                                    className="w-full px-4 py-2 bg-gray-50 text-gray-900 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none text-sm transition-all"
                                 />
                             </div>
                             <div className="flex justify-end gap-2 pt-4 border-t border-gray-50">
