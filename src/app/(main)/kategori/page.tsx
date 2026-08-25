@@ -14,6 +14,8 @@ export default function Page() {
     const addKategori = useAuthStore((state) => state.addKategori);
     const editKategori = useAuthStore((state) => state.editKategori);
     const deleteKategori = useAuthStore((state) => state.deleteKategori);
+    const user = useAuthStore((state) => state.user);
+    const switchBusinessTypePreset = useAuthStore((state) => state.switchBusinessTypePreset);
 
     // paginasi
     const [page_first, setPageFirst] = useState(1);
@@ -134,12 +136,57 @@ export default function Page() {
         <div className="space-y-6 pb-10">
             <Toaster position="top-center" reverseOrder={false} />
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div><h1 className="text-2xl font-bold text-gray-800">Kategori</h1></div>
+                <div>
+                    <h1 className="text-2xl font-bold text-gray-800">Manajemen Kategori FlexPOS</h1>
+                    <p className="text-xs text-gray-500 mt-0.5">
+                        Kategori produk/layanan dinamis yang disesuaikan dengan jenis operasional bisnis Anda.
+                    </p>
+                </div>
                 <div className="flex gap-2">
-                    <button onClick={() => openAddModal()} className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg text-sm font-semibold shadow-sm transition-all">
+                    <button onClick={() => openAddModal()} className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2.5 rounded-xl text-sm font-semibold shadow-sm transition-all">
                         <Plus size={18} />
-                        <span>Tambah Data</span>
+                        <span>Tambah Kategori</span>
                     </button>
+                </div>
+            </div>
+
+            {/* Quick Industry Switcher Tabs */}
+            <div className="bg-white border border-gray-200 rounded-2xl p-4 shadow-xs">
+                <div className="flex items-center justify-between flex-wrap gap-2 mb-3">
+                    <span className="text-xs font-bold text-gray-600 uppercase tracking-wider">
+                        Template Kategori Industri:
+                    </span>
+                    <span className="text-xs text-indigo-600 font-semibold">
+                        Toko Aktif: {user?.storeName || "FlexPOS"}
+                    </span>
+                </div>
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                    {[
+                        { id: 'food', label: '🍔 F&B / Kuliner', desc: 'Resto, Cafe, Warkop' },
+                        { id: 'barbershop', label: '💈 Barbershop & Jasa', desc: 'Styling, Shaving, Spa' },
+                        { id: 'sport', label: '⚽ Sport & Arena', desc: 'Sewa Lapangan & Alat' },
+                        { id: 'retail', label: '🛍️ Retail & Toko', desc: 'Fashion, Sembako, SKU' },
+                    ].map((item) => {
+                        const isActive = user?.businessType === item.id || (!user?.businessType && item.id === 'food');
+                        return (
+                            <button
+                                key={item.id}
+                                type="button"
+                                onClick={() => {
+                                    switchBusinessTypePreset(item.id as any);
+                                    toast.success(`Beralih ke template kategori ${item.label.split(' ')[1]}`);
+                                }}
+                                className={`p-2.5 rounded-xl border text-left transition-all ${
+                                    isActive
+                                        ? "bg-indigo-50/80 border-indigo-300 text-indigo-900 ring-2 ring-indigo-500/20 shadow-xs"
+                                        : "bg-gray-50/70 border-gray-200 text-gray-600 hover:bg-white hover:border-gray-300"
+                                }`}
+                            >
+                                <div className="text-xs font-bold">{item.label}</div>
+                                <div className="text-[10px] text-gray-400 mt-0.5">{item.desc}</div>
+                            </button>
+                        );
+                    })}
                 </div>
             </div>
 
