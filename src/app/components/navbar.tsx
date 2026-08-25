@@ -65,14 +65,14 @@ export default function Navbar({ onMenuClick }: NavbarProps) {
                 <div className="relative" ref={dropdownRef}>
                     <button
                         onClick={() => setIsOpen(!isOpen)}
-                        className="flex items-center gap-3 hover:bg-gray-50 p-1 rounded-lg transition-colors"
+                        className="flex items-center gap-3 hover:bg-gray-50 p-1.5 rounded-xl transition-colors border border-transparent hover:border-gray-200"
                     >
-                        <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white text-xs font-bold">
-                            {initials || "AD"}
+                        <div className="w-8 h-8 bg-gradient-to-tr from-indigo-600 to-blue-600 rounded-full flex items-center justify-center text-white text-xs font-bold shadow-xs">
+                            {initials || "FP"}
                         </div>
                         <div className="hidden sm:block text-left">
                             <p className="text-sm font-semibold text-gray-800 leading-none">{displayName}</p>
-                            <p className="text-[10px] text-gray-500 mt-1">{user?.username ? `@${user.username}` : "Administrator"}</p>
+                            <p className="text-[10px] text-gray-500 mt-1">{user?.storeName || (user?.username ? `@${user.username}` : "FlexPOS Admin")}</p>
                         </div>
                         <ChevronDown size={14} className={`text-gray-400 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
                     </button>
