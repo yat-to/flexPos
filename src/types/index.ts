@@ -1,3 +1,13 @@
+export type BusinessType = 'food' | 'barbershop' | 'sport' | 'retail';
+
+export interface UserProfile {
+    id: string;
+    name: string;
+    username: string;
+    storeName?: string;
+    businessType?: BusinessType;
+}
+
 export interface MenuItem {
     id?: string;
     title: string;
@@ -11,7 +21,7 @@ export interface Kategori {
     uraian: string;
     createdAt: string;
     index: number;
-
+    businessType?: BusinessType;
 }
 
 export interface MenuData {
@@ -23,4 +33,6 @@ export interface MenuData {
     status: boolean;
     foto: string;
     createdAt: string;
+    durasi_menit?: number; // Khusus Barbershop atau Sewa Lapangan / Sport
+    tipe_satuan?: string; // Porsi / Jam / Paket / Pcs
 }
