@@ -192,24 +192,12 @@ export default function LoginPage() {
               </div>
             </div>
 
-            <h3 className="text-xl font-bold text-gray-900 mb-1">
-              Menyiapkan FlexPOS Anda
-            </h3>
-            <p className="text-xs text-gray-500 mb-6 font-medium">
-              {loadingStep}
-            </p>
-
             {/* Progress Bar */}
             <div className="w-full bg-gray-100 h-2.5 rounded-full overflow-hidden mb-3">
               <div
                 className="bg-gradient-to-r from-indigo-600 to-blue-500 h-full rounded-full transition-all duration-500 ease-out"
                 style={{ width: `${progress}%` }}
               ></div>
-            </div>
-
-            <div className="flex items-center gap-2 text-[11px] text-gray-400 font-medium">
-              <Loader2 className="w-3.5 h-3.5 animate-spin text-indigo-600" />
-              <span>Memproses {progress}%</span>
             </div>
           </div>
         </div>
