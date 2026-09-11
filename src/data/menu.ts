@@ -20,7 +20,7 @@ export const menu = [
         icon: 'Receipt',
         children: [
             { title: 'Riwayat Transaksi', url: '/transaksi' },
-            { title: 'Pesanan Aktif / Meja', url: '/transaksi/aktif' } // Mendukung F&B & Rental Lapangan
+            // { title: 'Pesanan Aktif / Meja', url: '/transaksi/aktif' } // Mendukung F&B & Rental Lapangan
         ]
     },
 
@@ -30,8 +30,8 @@ export const menu = [
         url: '',
         icon: 'Package',
         children: [
-            { title: 'Daftar Produk & Layanan', url: '/produk' },
             { title: 'Kategori', url: '/produk/kategori' },
+            { title: 'Daftar Produk & Layanan', url: '/produk' },
             { title: 'Varian & Tambahan', url: '/produk/varian' } // Topping / Durasi Sewa / Pilihan Service
         ]
     },
