@@ -4,11 +4,11 @@
 // 15. PROFIL USAHA & STRUK
 // ============================================================================
 export const DUMMY_PROFIL_TOKO = {
-    nama_usaha: "Warung FlexKuliner UMKM",
+    nama_usaha: "INCESSFOOD",
     slogan: "Spesialis Sushi, Sup Ubi, Ayam Geprek & Nasi Goreng",
-    alamat: "Jl. Boulevard Raya No. 88, Makassar",
-    telepon: "0812-3456-7890",
-    instagram: "@flexkuliner.id",
+    alamat: "Jl. Mekar No. 11 Kendari",
+    telepon: "082292225046",
+    instagram: "@incessfood",
     header_struk: "Terima kasih atas kunjungan Anda di Warung FlexKuliner!",
     footer_struk: "Barang yang sudah dibeli tidak dapat ditukar. Selamat Menikmati!",
     pajak_persen: 0, // UMKM non-PPN atau opsional PB1 10%
