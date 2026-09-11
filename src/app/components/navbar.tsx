@@ -188,11 +188,10 @@ export default function Navbar({ onMenuClick }: NavbarProps) {
                             setIsNotifOpen(!isNotifOpen);
                             if (isProfileOpen) setIsProfileOpen(false);
                         }}
-                        className={`relative p-2.5 rounded-full transition-all duration-200 ${
-                            isNotifOpen
+                        className={`relative p-2.5 rounded-full transition-all duration-200 ${isNotifOpen
                                 ? "bg-indigo-50 text-indigo-600 ring-2 ring-indigo-500/20"
                                 : "text-gray-500 hover:bg-gray-100 hover:text-gray-700"
-                        }`}
+                            }`}
                         title="Notifikasi"
                     >
                         <Bell size={20} />
@@ -205,11 +204,10 @@ export default function Navbar({ onMenuClick }: NavbarProps) {
 
                     {/* Popover / Dropdown Menu Notifikasi */}
                     <div
-                        className={`absolute right-0 mt-3 w-80 sm:w-96 bg-white border border-gray-200 rounded-2xl shadow-xl z-50 transition-all duration-200 origin-top-right overflow-hidden ${
-                            isNotifOpen
+                        className={`absolute right-0 mt-3 w-80 sm:w-96 bg-white border border-gray-200 rounded-2xl shadow-xl z-50 transition-all duration-200 origin-top-right overflow-hidden ${isNotifOpen
                                 ? 'scale-100 opacity-100 visible translate-y-0'
                                 : 'scale-95 opacity-0 invisible -translate-y-2 pointer-events-none'
-                        }`}
+                            }`}
                     >
                         {/* Header Notifikasi */}
                         <div className="p-4 border-b border-gray-100 bg-gray-50/50">
@@ -237,21 +235,19 @@ export default function Navbar({ onMenuClick }: NavbarProps) {
                             <div className="flex items-center gap-1.5 bg-gray-100 p-1 rounded-xl">
                                 <button
                                     onClick={() => setNotifFilter('all')}
-                                    className={`flex-1 py-1 text-xs font-bold rounded-lg transition-all ${
-                                        notifFilter === 'all'
+                                    className={`flex-1 py-1 text-xs font-bold rounded-lg transition-all ${notifFilter === 'all'
                                             ? 'bg-white text-gray-800 shadow-xs'
                                             : 'text-gray-500 hover:text-gray-700'
-                                    }`}
+                                        }`}
                                 >
                                     Semua ({notifications.length})
                                 </button>
                                 <button
                                     onClick={() => setNotifFilter('unread')}
-                                    className={`flex-1 py-1 text-xs font-bold rounded-lg transition-all ${
-                                        notifFilter === 'unread'
+                                    className={`flex-1 py-1 text-xs font-bold rounded-lg transition-all ${notifFilter === 'unread'
                                             ? 'bg-white text-indigo-600 shadow-xs'
                                             : 'text-gray-500 hover:text-gray-700'
-                                    }`}
+                                        }`}
                                 >
                                     Belum Dibaca ({unreadCount})
                                 </button>
@@ -277,9 +273,8 @@ export default function Navbar({ onMenuClick }: NavbarProps) {
                                     <div
                                         key={notif.id}
                                         onClick={() => markAsRead(notif.id)}
-                                        className={`p-3.5 hover:bg-gray-50/80 cursor-pointer transition-colors flex items-start gap-3 relative group ${
-                                            !notif.isRead ? 'bg-indigo-50/30' : 'bg-white'
-                                        }`}
+                                        className={`p-3.5 hover:bg-gray-50/80 cursor-pointer transition-colors flex items-start gap-3 relative group ${!notif.isRead ? 'bg-indigo-50/30' : 'bg-white'
+                                            }`}
                                     >
                                         {/* Icon Kategori */}
                                         {renderNotifIcon(notif.type)}
@@ -357,9 +352,8 @@ export default function Navbar({ onMenuClick }: NavbarProps) {
                     </button>
 
                     <div
-                        className={`absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-xl shadow-lg py-2 z-50 transition-all duration-200 origin-top-right ${
-                            isProfileOpen ? 'scale-100 opacity-100 visible' : 'scale-95 opacity-0 invisible pointer-events-none'
-                        }`}
+                        className={`absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-xl shadow-lg py-2 z-50 transition-all duration-200 origin-top-right ${isProfileOpen ? 'scale-100 opacity-100 visible' : 'scale-95 opacity-0 invisible pointer-events-none'
+                            }`}
                     >
                         <button className="w-full flex items-center gap-2 px-4 py-2 text-sm text-gray-600 hover:bg-gray-50 transition-colors">
                             <User size={16} /> Profil Saya
