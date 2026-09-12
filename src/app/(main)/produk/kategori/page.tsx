@@ -162,7 +162,7 @@ export default function KategoriProdukPage() {
                         className="px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white text-xs font-bold rounded-xl shadow-md shadow-indigo-600/20 transition-all flex items-center gap-2"
                     >
                         <Plus size={16} />
-                        <span>Tambah Kategori Baru</span>
+                        <span>Tambah Kategori</span>
                     </button>
                 </div>
             </div>
@@ -406,7 +406,6 @@ export default function KategoriProdukPage() {
                                     required
                                     value={formData.uraian}
                                     onChange={(e) => setFormData({ ...formData, uraian: e.target.value })}
-                                    placeholder="Contoh: Aneka Jus Buah"
                                     className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm font-bold text-slate-900 focus:outline-none focus:border-indigo-500"
                                 />
                             </div>
@@ -419,7 +418,6 @@ export default function KategoriProdukPage() {
                                     rows={2}
                                     value={formData.deskripsi}
                                     onChange={(e) => setFormData({ ...formData, deskripsi: e.target.value })}
-                                    placeholder="Keterangan singkat kategori..."
                                     className="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:outline-none focus:border-indigo-500"
                                 />
                             </div>
@@ -436,7 +434,7 @@ export default function KategoriProdukPage() {
                                     type="submit"
                                     className="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-xl shadow-md transition-all"
                                 >
-                                    Simpan Kategori
+                                    Simpan
                                 </button>
                             </div>
                         </form>
