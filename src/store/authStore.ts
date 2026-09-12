@@ -172,11 +172,11 @@ export const useAuthStore = create<AuthState>()(
 
           // --- KODE DUMMY (AKTIF) ---
           await new Promise((resolve) => setTimeout(resolve, 200));
-          const currentList = get().list_kategori.length > 0 ? get().list_kategori : INITIAL_KATEGORI;
+          const currentList = get().list_kategori.length > 0 ? get().list_kategori : BUSINESS_CATEGORY_PRESETS.food;
           
           let filtered = currentList;
           if (search.trim()) {
-            filtered = currentList.filter((k) =>
+            filtered = currentList.filter((k: Kategori) =>
               k.uraian.toLowerCase().includes(search.toLowerCase())
             );
           }
