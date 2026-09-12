@@ -344,7 +344,7 @@ export default function Page() {
                                 </div>
                                 <h3 className="font-bold text-gray-800 text-lg">Hapus Data?</h3>
                                 <p className="text-sm text-gray-500 mt-1">
-                                    Anda akan menghapus data <span className="font-bold text-gray-800">{selectedProduct?.nama || selectedProduct?.uraian_kategori}</span>. Tindakan ini tidak dapat dibatalkan.
+                                    Anda akan menghapus data <span className="font-bold text-gray-800">{selectedProduct?.nama_menu || selectedProduct?.kategori_nama}</span>. Tindakan ini tidak dapat dibatalkan.
                                 </p>
                             </div>
 
@@ -369,12 +369,8 @@ export default function Page() {
                 {detailModal && (
                     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-xs p-4">
                         <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden animate-in fade-in zoom-in duration-200">
-                            <div className="relative h-56 w-full bg-gray-100">
-                                <img
-                                    src={selectedProduct?.foto || "/placeholder-image.jpg"}
-                                    alt={selectedProduct?.nama || selectedProduct?.uraian_kategori}
-                                    className="w-full h-full object-cover"
-                                />
+                            <div className="relative h-56 w-full bg-gray-100 flex items-center justify-center text-6xl">
+                                {selectedProduct?.foto || "📦"}
                                 <button 
                                     onClick={() => setDetailModal(false)} 
                                     className="absolute top-4 right-4 p-2 bg-black/50 text-white rounded-full hover:bg-black/70 transition-colors"
@@ -385,7 +381,7 @@ export default function Page() {
                             <div className="p-6">
                                 <div className="flex gap-2 mb-3">
                                     <span className="bg-blue-100 text-blue-700 text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider">
-                                        {selectedProduct?.kategori || "Kategori"}
+                                        {selectedProduct?.kategori_nama || "Kategori"}
                                     </span>
                                     {/* === TAMBAHAN: STATUS DI DETAIL === */}
                                     <span className={`text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider ${
@@ -396,22 +392,22 @@ export default function Page() {
                                     {/* ================================ */}
                                 </div>
                                 <h2 className="text-xl font-bold text-gray-900 mb-2">
-                                    {selectedProduct?.nama || selectedProduct?.uraian_kategori}
+                                    {selectedProduct?.nama_menu}
                                 </h2>
                                 <p className="text-sm text-gray-600 mb-6 text-justify leading-relaxed">
-                                    {selectedProduct?.keterangan || "Tidak ada keterangan tersedia."}
+                                    Produk katalog FlexPOS resmi dengan manajemen stok otomatis.
                                 </p>
                                 <div className="flex justify-between items-center bg-gray-50 p-4 rounded-xl border border-gray-100">
                                     <div>
                                         <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Harga Jual</p>
                                         <p className="text-lg font-black text-gray-900">
-                                            Rp{(selectedProduct?.harga_jual || 0).toLocaleString("id-ID")}
+                                            Rp{(selectedProduct?.harga || 0).toLocaleString("id-ID")}
                                         </p>
                                     </div>
                                     <div className="text-right">
-                                        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Stok Tersedia</p>
-                                        <p className="text-lg font-black text-blue-600">
-                                            {selectedProduct?.stok || 0}
+                                        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Tipe</p>
+                                        <p className="text-sm font-black text-blue-600">
+                                            {selectedProduct?.tipe_satuan || "Pcs"}
                                         </p>
                                     </div>
                                 </div>
