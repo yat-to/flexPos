@@ -31,7 +31,7 @@ export const menu = [
         icon: 'Package',
         children: [
             { title: 'Kategori', url: '/produk/kategori' },
-            { title: 'Daftar Produk & Layanan', url: '/produk' },
+            { title: 'Daftar Produk', url: '/produk' },
             { title: 'Varian & Tambahan', url: '/produk/varian' } // Topping / Durasi Sewa / Pilihan Service
         ]
     },
