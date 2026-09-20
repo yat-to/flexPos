@@ -10,12 +10,20 @@ export class RegisterController {
   // 1. GET: http://localhost:8000/register (Bisa dibuka langsung di Browser)
   @Get()
   checkRegister() {
+    console.log('\n👀 [BACKEND LOG] Ada request GET /register masuk dari browser / frontend!');
     return this.registerService.getAllUsers();
   }
 
-  // 2. POST: http://localhost:8000/register (Menerima input dari formulir pendaftaran)
+  // 2. POST: http://localhost:8000/register (Menerima input dari register)
   @Post()
   register(@Body() body: { name: string; username: string; password?: string }) {
+    console.log('\n======================================================');
+    console.log('🔔 [BACKEND LOG] ADA REQUEST REGISTER MASUK DARI FRONTEND NIH!');
+    console.log('⏰ Waktu Diterima:', new Date().toLocaleTimeString());
+    console.log('📦 Data dari Frontend:');
+    console.log(JSON.stringify(body, null, 2));
+    console.log('======================================================\n');
+
     return this.registerService.registerUser(body);
   }
 }
