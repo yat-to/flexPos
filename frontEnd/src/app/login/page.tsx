@@ -18,10 +18,11 @@ import {
   Trophy,
   ShoppingBag,
 } from "lucide-react";
+import { API_ENDPOINTS } from "@/services/api";
 
 export default function LoginPage() {
   const router = useRouter();
-  const { login, register, loading, error, isAuthenticated, clearError, user } = useAuthStore();
+  const { login, loading, error, isAuthenticated, clearError, user } = useAuthStore();
 
   const [mode, setMode] = useState<"login" | "register">("login");
   const [loginForm, setLoginForm] = useState({ username: "", password: "" });
@@ -36,6 +37,7 @@ export default function LoginPage() {
 
   const [registerSuccess, setRegisterSuccess] = useState<string | null>(null);
   const [registerError, setRegisterError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [isRedirecting, setIsRedirecting] = useState(false);
   const [loadingStep, setLoadingStep] = useState("Memverifikasi akun...");
   const [progress, setProgress] = useState(20);
@@ -105,14 +107,35 @@ export default function LoginPage() {
       return;
     }
 
+    setIsSubmitting(true);
+
     try {
-      await register(
-        registerForm.name,
-        registerForm.username,
-        registerForm.password,
-        registerForm.businessType,
-        registerForm.storeName
-      );
+      console.log("🚀 [FRONTEND] Mengirim request registrasi langsung dari Halaman Register...");
+      console.log("📦 Data yang dikirim ke backend:", registerForm);
+
+      // 🌐 Panggilan fetch langsung ke Backend NestJS (http://localhost:8000/register)
+      const res = await fetch(API_ENDPOINTS.REGISTER, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: registerForm.name,
+          username: registerForm.username,
+          password: registerForm.password,
+          businessType: registerForm.businessType,
+          storeName: registerForm.storeName,
+        }),
+      });
+
+      const data = await res.json();
+      console.log("✅ [FRONTEND] Respon diterima dari backend:", data);
+
+      if (!res.ok) {
+        throw new Error(data.message || "Gagal melakukan registrasi.");
+      }
+
+      // Registrasi berhasil di backend NestJS
 
       setRegisterSuccess(
         `Akun FlexPOS untuk "${registerForm.storeName || registerForm.name}" berhasil didaftarkan! Silakan masuk.`
@@ -135,6 +158,8 @@ export default function LoginPage() {
       } else {
         setRegisterError("Gagal melakukan registrasi.");
       }
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -426,7 +451,6 @@ export default function LoginPage() {
                     type="text"
                     value={registerForm.name}
                     onChange={(e) => setRegisterForm({ ...registerForm, name: e.target.value })}
-                    placeholder="Contoh: Budi Santoso"
                     required
                     className="block w-full pl-9 pr-3 py-2 bg-white border border-gray-200 rounded-xl text-xs sm:text-sm shadow-sm placeholder-gray-400 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 text-gray-900 transition-all"
                   />
@@ -435,7 +459,7 @@ export default function LoginPage() {
 
               <div>
                 <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1">
-                  Nama Toko / Arena / Usaha
+                  Nama Usaha
                 </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
@@ -445,7 +469,6 @@ export default function LoginPage() {
                     type="text"
                     value={registerForm.storeName}
                     onChange={(e) => setRegisterForm({ ...registerForm, storeName: e.target.value })}
-                    placeholder="Contoh: Master Barbershop / Champion Arena"
                     required
                     className="block w-full pl-9 pr-3 py-2 bg-white border border-gray-200 rounded-xl text-xs sm:text-sm shadow-sm placeholder-gray-400 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 text-gray-900 transition-all"
                   />
@@ -454,7 +477,7 @@ export default function LoginPage() {
 
               <div>
                 <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1">
-                  Username Akun
+                  Username
                 </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
@@ -493,7 +516,7 @@ export default function LoginPage() {
 
                 <div>
                   <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1">
-                    Konfirmasi
+                    Konfirmasi Password
                   </label>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -513,10 +536,10 @@ export default function LoginPage() {
 
               <button
                 type="submit"
-                disabled={loading}
+                disabled={loading || isSubmitting}
                 className="w-full mt-2 flex justify-center items-center gap-2 py-3 px-4 border border-transparent rounded-xl shadow-md text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-70 disabled:cursor-not-allowed transition-all active:scale-[0.99]"
               >
-                {loading ? (
+                {loading || isSubmitting ? (
                   <div className="flex items-center gap-2">
                     <Loader2 className="w-4 h-4 animate-spin text-white" />
                     <span>Mendaftarkan Usaha...</span>
