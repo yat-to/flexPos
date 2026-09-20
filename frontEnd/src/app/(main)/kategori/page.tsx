@@ -1,27 +1,30 @@
 "use client";
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Plus, ChevronLeft, ChevronRight, Edit, Trash2, X } from 'lucide-react';
-import { Kategori } from '@/types';
+import { Kategori, BusinessType } from '@/types';
 import { useAuthStore } from '@/store/authStore';
+import { API_ENDPOINTS } from '@/services/api';
 import toast, { Toaster } from 'react-hot-toast';
 
 export default function Page() {
-    const list_kategori = useAuthStore((state) => state.list_kategori);
-    const jml_data = useAuthStore((state) => state.jml_data);
-    const loading = useAuthStore((state) => state.loading);
-    const error = useAuthStore((state) => state.error);
-    const fetchKategori = useAuthStore((state) => state.fetchKategori);
-    const addKategori = useAuthStore((state) => state.addKategori);
-    const editKategori = useAuthStore((state) => state.editKategori);
-    const deleteKategori = useAuthStore((state) => state.deleteKategori);
+    // Ambil auth state (user & token) dari useAuthStore
     const user = useAuthStore((state) => state.user);
-    const switchBusinessTypePreset = useAuthStore((state) => state.switchBusinessTypePreset);
+    const token = useAuthStore((state) => state.token);
 
-    // paginasi
+    // State data lokal di halaman Kategori
+    const [list_kategori, setListKategori] = useState<Kategori[]>([]);
+    const [jml_data, setJmlData] = useState<number>(1);
+    const [loading, setLoading] = useState<boolean>(false);
+    const [error, setError] = useState<string | null>(null);
+    const [selectedBusinessType, setSelectedBusinessType] = useState<BusinessType>(
+        user?.businessType || 'food'
+    );
+
+    // Paginasi
     const [page_first, setPageFirst] = useState(1);
     const limit = 10;
 
-
+    // Modal State
     const [modalAddOpen, setModalAddOpen] = useState(false);
     const [modalEditOpen, setModalEditOpen] = useState(false);
     const [deleteOpen, setDeleteOpen] = useState(false);
@@ -29,9 +32,71 @@ export default function Page() {
     const [form, setForm] = useState({
         id: '',
         uraian: '',
-    })
+    });
 
-    // MODAL
+    // ============================================================
+    // FUNGSI TANGKAP DATA LANGSUNG DARI BACKEND DI HALAMAN INI
+    // ============================================================
+    const fetchKategori = useCallback(async (page: number = 1, search: string = "") => {
+        setLoading(true);
+        setError(null);
+
+        try {
+            const queryParams = new URLSearchParams({
+                page: page.toString(),
+                limit: limit.toString(),
+                search,
+                businessType: selectedBusinessType,
+            });
+
+            const res = await fetch(`${API_ENDPOINTS.CATEGORIES}?${queryParams}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
+                },
+            });
+
+            if (!res.ok) {
+                // Jika backend belum menyediakan endpoint atau error
+                if (res.status === 404) {
+                    console.warn(`[KATEGORI PAGE] Endpoint ${API_ENDPOINTS.CATEGORIES} belum siap di backend.`);
+                    setListKategori([]);
+                    setJmlData(1);
+                    return;
+                }
+                throw new Error(`Gagal mengambil data dari server (${res.status})`);
+            }
+
+            const data = await res.json();
+
+            // Tangani variasi format respon dari backend (apakah array langsung atau paginated object)
+            if (Array.isArray(data)) {
+                setListKategori(data);
+                setJmlData(Math.ceil(data.length / limit) || 1);
+            } else if (data && data.items) {
+                setListKategori(data.items);
+                setJmlData(data.totalPages || 1);
+            } else {
+                setListKategori([]);
+                setJmlData(1);
+            }
+        } catch (err) {
+            const message = err instanceof Error ? err.message : 'Terjadi kesalahan saat memuat data';
+            setError(message);
+        } finally {
+            setLoading(false);
+        }
+    }, [token, limit, selectedBusinessType]);
+
+    // Load data setiap kali halaman atau tipe bisnis berganti
+    useEffect(() => {
+        fetchKategori(page_first, "");
+    }, [page_first, fetchKategori]);
+
+    // ============================================================
+    // MODAL HANDLERS
+    // ============================================================
     const openAddModal = () => {
         setForm({
             id: '',
@@ -40,7 +105,7 @@ export default function Page() {
         setModalAddOpen(true);
     };
 
-    const openEditModal = (data : Kategori) => {
+    const openEditModal = (data: Kategori) => {
         setForm({
             id: data.id,
             uraian: data.uraian,
@@ -56,7 +121,9 @@ export default function Page() {
         setDeleteOpen(true);
     };
 
-    // PAGINASI
+    // ============================================================
+    // PAGINASI HANDLERS
+    // ============================================================
     const handleNext = () => {
         setPageFirst((prev) => prev + 1);
     };
@@ -67,59 +134,109 @@ export default function Page() {
 
     const indexing = (index: number) => {
         return (page_first - 1) * limit + index + 1;
-    }
+    };
 
-    useEffect(() => {
-        fetchKategori(page_first, "");
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [page_first]);
-
+    // ============================================================
+    // AKSI CRUD LANGSUNG KE BACKEND
+    // ============================================================
     const handleAdd = async (e: React.FormEvent) => {
         e.preventDefault();
+        setLoading(true);
+
         try {
-            const success = await addKategori({ uraian: form.uraian });
-            if (success) {
-                toast.success('Sukses Tambah Data!');
-                fetchKategori(page_first, "");
+            const res = await fetch(API_ENDPOINTS.CATEGORIES, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
+                },
+                body: JSON.stringify({
+                    uraian: form.uraian,
+                    businessType: selectedBusinessType,
+                }),
+            });
+
+            if (!res.ok) {
+                const errData = await res.json().catch(() => ({}));
+                throw new Error(errData.message || 'Gagal menambah kategori');
             }
-        } catch {
-            toast.error('Gagal menambah data'); // Notif Gagal
+
+            toast.success('Sukses Tambah Data!');
+            setModalAddOpen(false);
+            fetchKategori(page_first, "");
+        } catch (err) {
+            const msg = err instanceof Error ? err.message : 'Gagal menambah data';
+            toast.error(msg);
+        } finally {
+            setLoading(false);
         }
-    }
+    };
 
     const handleEdit = async (e: React.FormEvent) => {
         e.preventDefault();
+        setLoading(true);
+
         try {
-            const success = await editKategori(form.id, { uraian: form.uraian });
-            if (success) {
-                toast.success('Sukses Edit Data!');
-                fetchKategori(page_first, "");
+            const res = await fetch(`${API_ENDPOINTS.CATEGORIES}/${form.id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
+                },
+                body: JSON.stringify({
+                    uraian: form.uraian,
+                }),
+            });
+
+            if (!res.ok) {
+                const errData = await res.json().catch(() => ({}));
+                throw new Error(errData.message || 'Gagal memperbarui kategori');
             }
-        } catch {
-            toast.error('Gagal memperbarui data');
+
+            toast.success('Sukses Edit Data!');
+            setModalEditOpen(false);
+            fetchKategori(page_first, "");
+        } catch (err) {
+            const msg = err instanceof Error ? err.message : 'Gagal memperbarui data';
+            toast.error(msg);
+        } finally {
+            setLoading(false);
         }
-    }
+    };
 
     const handleDelete = async () => {
-        const prosesHapus = deleteKategori(form.id);
+        setLoading(true);
 
-        toast.promise(prosesHapus, {
-            loading: 'Sedang menghapus...',
-            success: 'Berhasil dihapus!',
-            error: 'Gagal menghapus data.',
-        });
+        try {
+            const res = await fetch(`${API_ENDPOINTS.CATEGORIES}/${form.id}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
+                },
+            });
 
-        await prosesHapus;
-        setDeleteOpen(false);
-        fetchKategori(page_first, "");
-    }
+            if (!res.ok) {
+                const errData = await res.json().catch(() => ({}));
+                throw new Error(errData.message || 'Gagal menghapus kategori');
+            }
+
+            toast.success('Berhasil dihapus!');
+            setDeleteOpen(false);
+            fetchKategori(page_first, "");
+        } catch (err) {
+            const msg = err instanceof Error ? err.message : 'Gagal menghapus data';
+            toast.error(msg);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     const getPageNumbers = () => {
         const maxButtons = 4;
         let startPage = Math.max(1, page_first - Math.floor(maxButtons / 2));
         let endPage = startPage + maxButtons - 1;
 
-        // Jika halaman akhir melebihi total halaman
         if (endPage > jml_data) {
             endPage = jml_data;
             startPage = Math.max(1, endPage - maxButtons + 1);
@@ -162,18 +279,18 @@ export default function Page() {
                 </div>
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                     {[
-                        { id: 'food', label: '🍔 F&B / Kuliner', desc: 'Resto, Cafe, Warkop' },
-                        { id: 'barbershop', label: '💈 Barbershop & Jasa', desc: 'Styling, Shaving, Spa' },
-                        { id: 'sport', label: '⚽ Sport & Arena', desc: 'Sewa Lapangan & Alat' },
-                        { id: 'retail', label: '🛍️ Retail & Toko', desc: 'Fashion, Sembako, SKU' },
+                        { id: 'food' as BusinessType, label: '🍔 F&B / Kuliner', desc: 'Resto, Cafe, Warkop' },
+                        { id: 'barbershop' as BusinessType, label: '💈 Barbershop & Jasa', desc: 'Styling, Shaving, Spa' },
+                        { id: 'sport' as BusinessType, label: '⚽ Sport & Arena', desc: 'Sewa Lapangan & Alat' },
+                        { id: 'retail' as BusinessType, label: '🛍️ Retail & Toko', desc: 'Fashion, Sembako, SKU' },
                     ].map((item) => {
-                        const isActive = user?.businessType === item.id || (!user?.businessType && item.id === 'food');
+                        const isActive = selectedBusinessType === item.id;
                         return (
                             <button
                                 key={item.id}
                                 type="button"
                                 onClick={() => {
-                                    switchBusinessTypePreset(item.id as any);
+                                    setSelectedBusinessType(item.id);
                                     toast.success(`Beralih ke template kategori ${item.label.split(' ')[1]}`);
                                 }}
                                 className={`p-2.5 rounded-xl border text-left transition-all ${
@@ -192,7 +309,7 @@ export default function Page() {
 
             {error && (
                 <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg text-sm">
-                    ⚠️ Error: {error}
+                    ⚠️ {error}
                 </div>
             )}
 
@@ -221,7 +338,7 @@ export default function Page() {
                                 </tr>
                             ) : (
                                 list_kategori.map((data, index) => (
-                                    <tr key={data.id} className="hover:bg-blue-50/30 transition-colors group">
+                                    <tr key={data.id || index} className="hover:bg-blue-50/30 transition-colors group">
                                         <td className="px-6 py-4 text-center border-b border-r border-gray-200">
                                             <span className="text-sm text-gray-800">{indexing(index)}</span>
                                         </td>
@@ -281,8 +398,6 @@ export default function Page() {
                     </div>
                 </div>
             </div>
-
-
 
             {modalAddOpen && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-none p-4">
