@@ -1,5 +1,6 @@
 import { Body, Controller, Get, Post } from '@nestjs/common';
 import { RegisterService } from './register.service';
+import { RegisterUserDto } from './dto/register.dto';
 
 // '@Controller('register')' berarti controller ini menangani URL:
 // http://localhost:8000/register
@@ -16,12 +17,12 @@ export class RegisterController {
 
   // 2. POST: http://localhost:8000/register (Menerima input dari register)
   @Post()
-  register(@Body() body: { name: string; username: string; password?: string }) {
+  register(@Body() body: RegisterUserDto ) {
     console.log('\n======================================================');
     console.log('🔔 [BACKEND LOG] ADA REQUEST REGISTER MASUK DARI FRONTEND NIH!');
     console.log('⏰ Waktu Diterima:', new Date().toLocaleTimeString());
     console.log('📦 Data dari Frontend:');
-    console.log(JSON.stringify(body, null, 2));
+    console.log(JSON.stringify(body));
     console.log('======================================================\n');
 
     return this.registerService.registerUser(body);
