@@ -10,13 +10,13 @@ import {
   Store,
   ArrowRight,
   CheckCircle2,
-  ShieldCheck,
   Sparkles,
   Loader2,
   UtensilsCrossed,
   Scissors,
   Trophy,
   ShoppingBag,
+  ChevronDown,
 } from "lucide-react";
 import { API_ENDPOINTS } from "@/services/api";
 
@@ -304,7 +304,7 @@ export default function LoginPage() {
                 : "text-gray-500 hover:text-gray-900"
                 }`}
             >
-              Masuk
+              Login
             </button>
             <button
               type="button"
@@ -314,7 +314,7 @@ export default function LoginPage() {
                 : "text-gray-500 hover:text-gray-900"
                 }`}
             >
-              Daftar Usaha Baru
+              Register
             </button>
           </div>
 
@@ -336,9 +336,7 @@ export default function LoginPage() {
             </div>
           )}
 
-          {/* ========================================================= */}
-          {/* TAB 1: FORM LOGIN                                         */}
-          {/* ========================================================= */}
+          {/* TAB 1: FORM LOGIN */}
           {mode === "login" && (
             <form onSubmit={handleLoginSubmit} className="space-y-4 sm:space-y-5">
               <div>
@@ -353,7 +351,6 @@ export default function LoginPage() {
                     type="text"
                     value={loginForm.username}
                     onChange={(e) => setLoginForm({ ...loginForm, username: e.target.value })}
-                    placeholder="admin, barber, sport, atau kasir"
                     required
                     className="block w-full pl-10 pr-4 py-3 bg-white border border-gray-200 rounded-xl text-sm shadow-sm placeholder-gray-400 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 text-gray-900 transition-all"
                   />
@@ -377,7 +374,6 @@ export default function LoginPage() {
                     type="password"
                     value={loginForm.password}
                     onChange={(e) => setLoginForm({ ...loginForm, password: e.target.value })}
-                    placeholder="••••••••"
                     required
                     className="block w-full pl-10 pr-4 py-3 bg-white border border-gray-200 rounded-xl text-sm shadow-sm placeholder-gray-400 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 text-gray-900 transition-all"
                   />
@@ -404,38 +400,37 @@ export default function LoginPage() {
             </form>
           )}
 
-          {/* ========================================================= */}
-          {/* TAB 2: FORM REGISTER MULTI-BUSINESS                       */}
-          {/* ========================================================= */}
+          {/* TAB 2: FORM REGISTER MULTI-BUSINESS */}
           {mode === "register" && (
             <form onSubmit={handleRegisterSubmit} className="space-y-3.5">
               {/* Business Type Selector */}
               <div>
-                <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
-                  1. Pilih Jenis Usaha Anda
+                <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1">
+                  Jenis Usaha
                 </label>
-                <div className="grid grid-cols-2 gap-2">
-                  {businessTypes.map((type) => {
-                    const IconComponent = type.icon;
-                    const isSelected = registerForm.businessType === type.id;
-                    return (
-                      <button
-                        key={type.id}
-                        type="button"
-                        onClick={() => setRegisterForm({ ...registerForm, businessType: type.id })}
-                        className={`p-2.5 rounded-xl border text-left transition-all ${isSelected
-                          ? `${type.color} ring-2 ring-indigo-500/30 shadow-xs`
-                          : "bg-white border-gray-200 text-gray-600 hover:bg-gray-50"
-                          }`}
-                      >
-                        <div className="flex items-center gap-1.5 font-bold text-xs">
-                          <IconComponent className="w-3.5 h-3.5 shrink-0" />
-                          <span>{type.label}</span>
-                        </div>
-                        <div className="text-[10px] text-gray-400 mt-0.5 truncate">{type.sublabel}</div>
-                      </button>
-                    );
-                  })}
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400">
+                    <Store className="w-4 h-4" />
+                  </div>
+                  <select
+                    value={registerForm.businessType}
+                    onChange={(e) =>
+                      setRegisterForm({
+                        ...registerForm,
+                        businessType: e.target.value as BusinessType,
+                      })
+                    }
+                    className="block w-full pl-10 pr-9 py-2.5 bg-white border border-gray-200 rounded-xl text-xs sm:text-sm shadow-sm focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 text-gray-900 transition-all cursor-pointer appearance-none"
+                  >
+                    {businessTypes.map((type) => (
+                      <option key={type.id} value={type.id}>
+                        {type.label} ({type.sublabel})
+                      </option>
+                    ))}
+                  </select>
+                  <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-gray-400">
+                    <ChevronDown className="w-4 h-4" />
+                  </div>
                 </div>
               </div>
 
@@ -487,7 +482,6 @@ export default function LoginPage() {
                     type="text"
                     value={registerForm.username}
                     onChange={(e) => setRegisterForm({ ...registerForm, username: e.target.value })}
-                    placeholder="Contoh: championarena"
                     required
                     className="block w-full pl-9 pr-3 py-2 bg-white border border-gray-200 rounded-xl text-xs sm:text-sm shadow-sm placeholder-gray-400 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 text-gray-900 transition-all"
                   />
@@ -507,7 +501,6 @@ export default function LoginPage() {
                       type="password"
                       value={registerForm.password}
                       onChange={(e) => setRegisterForm({ ...registerForm, password: e.target.value })}
-                      placeholder="••••••••"
                       required
                       className="block w-full pl-8 pr-2.5 py-2 bg-white border border-gray-200 rounded-xl text-xs shadow-sm placeholder-gray-400 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 text-gray-900 transition-all"
                     />
@@ -526,7 +519,6 @@ export default function LoginPage() {
                       type="password"
                       value={registerForm.confirmPassword}
                       onChange={(e) => setRegisterForm({ ...registerForm, confirmPassword: e.target.value })}
-                      placeholder="••••••••"
                       required
                       className="block w-full pl-8 pr-2.5 py-2 bg-white border border-gray-200 rounded-xl text-xs shadow-sm placeholder-gray-400 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 text-gray-900 transition-all"
                     />
