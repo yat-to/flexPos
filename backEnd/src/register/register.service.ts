@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { RegisterUserDto } from './dto/register.dto';
 
 @Injectable()
 export class RegisterService {
@@ -15,12 +16,16 @@ export class RegisterService {
   }
 
   // Fungsi 2: Memproses data pendaftaran baru
-  registerUser(payload: { name: string; username: string; password?: string }) {
+  registerUser(payload: RegisterUserDto) {
     const newUser = {
-      id: this.users.length + 1,
-      name: payload.name || 'Pengguna Baru',
-      username: payload.username || 'user',
+      id: payload.id,
+      name: payload.name,
+      username: payload.username,
+      password: payload.password,
+      businessType: payload.businessType,
+      storeName: payload.storeName,
       createdAt: new Date().toISOString(),
+
     };
 
     // Simpan ke array
