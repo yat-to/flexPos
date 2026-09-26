@@ -1,3 +1,5 @@
+import { UserRole } from '../../common/enums/role.enum';
+
 export class RegisterUserDto {
   id?: string;
   name: string;
@@ -5,4 +7,5 @@ export class RegisterUserDto {
   password?: string;
   storeName?: string;
   businessType?: string;
+  role?: UserRole;
 }
