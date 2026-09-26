@@ -7,4 +7,6 @@ export const API_ENDPOINTS = {
   REGISTER: `${BASE_URL}register`,
   LOGIN: `${BASE_URL}auth/login`,
   CATEGORIES: `${BASE_URL}categories`,
+  BUSINESS_TYPES: `${BASE_URL}jenis-usaha`,
+  JENIS_USAHA: `${BASE_URL}jenis-usaha`,
 };
