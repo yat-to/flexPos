@@ -1,11 +1,24 @@
-export type BusinessType = 'food' | 'barbershop' | 'sport' | 'retail';
+export type JenisUsaha = 'food' | 'barbershop' | 'sport' | 'retail' | string;
+export type BusinessType = JenisUsaha; // Alias backward-compatibility
+
+export interface JenisUsahaItem {
+    id: string;
+    code: string;
+    name: string;
+    description?: string;
+    icon?: string;
+    createdAt?: string;
+    updatedAt?: string;
+}
+export type BusinessTypeItem = JenisUsahaItem; // Alias backward-compatibility
 
 export interface UserProfile {
     id: string;
     name: string;
     username: string;
     storeName?: string;
-    businessType?: BusinessType;
+    businessType?: JenisUsaha;
+    role?: 'superadmin' | 'merchant' | string;
 }
 
 export interface MenuItem {
@@ -21,7 +34,7 @@ export interface Kategori {
     uraian: string;
     createdAt: string;
     index: number;
-    businessType?: BusinessType;
+    businessType?: JenisUsaha;
 }
 
 export interface MenuData {
