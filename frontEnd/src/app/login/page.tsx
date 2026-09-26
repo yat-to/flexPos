@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/store/authStore";
-import { BusinessType } from "@/types";
+import { JenisUsaha } from "@/types";
 import {
   KeyRound,
   User,
@@ -12,10 +12,6 @@ import {
   CheckCircle2,
   Sparkles,
   Loader2,
-  UtensilsCrossed,
-  Scissors,
-  Trophy,
-  ShoppingBag,
   ChevronDown,
 } from "lucide-react";
 import { API_ENDPOINTS } from "@/services/api";
@@ -29,7 +25,7 @@ export default function LoginPage() {
   const [registerForm, setRegisterForm] = useState({
     name: "",
     storeName: "",
-    businessType: "food" as BusinessType,
+    businessType: "food" as JenisUsaha,
     username: "",
     password: "",
     confirmPassword: "",
@@ -42,20 +38,47 @@ export default function LoginPage() {
   const [loadingStep, setLoadingStep] = useState("Memverifikasi akun...");
   const [progress, setProgress] = useState(20);
 
+  // Ambil daftar Jenis Usaha dinamis dari Backend
+  const [jenisUsahaList, setJenisUsahaList] = useState<Array<{ code: string; name: string; description?: string }>>([
+    { code: "food", name: "F&B / Kuliner", description: "Resto, Cafe, Warkop" },
+    { code: "barbershop", name: "Barbershop", description: "Potong, Styling, Treatment" },
+    { code: "sport", name: "Sport & Arena", description: "Sewa Lapangan & Alat" },
+    { code: "retail", name: "Retail & Toko", description: "Fashion, Sembako, Gadget" },
+  ]);
+
+  useEffect(() => {
+    fetch(API_ENDPOINTS.JENIS_USAHA)
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (Array.isArray(data) && data.length > 0) {
+          setJenisUsahaList(
+            data.map((item) => ({
+              code: item.code,
+              name: item.name,
+              description: item.description,
+            }))
+          );
+        }
+      })
+      .catch(() => {});
+  }, []);
+
   // Animasi dan transisi loading setelah berhasil login
   useEffect(() => {
     if (isAuthenticated) {
       setIsRedirecting(true);
 
       const businessName = user?.storeName || "Toko Anda";
-      const businessTypeLabel =
-        user?.businessType === "barbershop"
+      const jenisUsahaMatched = jenisUsahaList.find((j) => j.code === user?.businessType);
+      const jenisUsahaLabel =
+        jenisUsahaMatched?.name ||
+        (user?.businessType === "barbershop"
           ? "Barbershop & Salon"
           : user?.businessType === "sport"
             ? "Sport & Arena Rental"
             : user?.businessType === "retail"
               ? "Retail & Toko"
-              : "F&B / Resto & Cafe";
+              : "F&B / Resto & Cafe");
 
       const step1 = setTimeout(() => {
         setLoadingStep(`Menghubungkan akun "${businessName}"...`);
@@ -63,7 +86,7 @@ export default function LoginPage() {
       }, 350);
 
       const step2 = setTimeout(() => {
-        setLoadingStep(`Memuat modul & kategori khusus ${businessTypeLabel}...`);
+        setLoadingStep(`Memuat modul & kategori khusus ${jenisUsahaLabel}...`);
         setProgress(85);
       }, 750);
 
@@ -162,43 +185,6 @@ export default function LoginPage() {
       setIsSubmitting(false);
     }
   };
-
-  const businessTypes: Array<{
-    id: BusinessType;
-    label: string;
-    sublabel: string;
-    icon: typeof UtensilsCrossed;
-    color: string;
-  }> = [
-      {
-        id: "food",
-        label: "F&B / Kuliner",
-        sublabel: "Resto, Cafe, Warkop",
-        icon: UtensilsCrossed,
-        color: "text-amber-500 bg-amber-50 border-amber-200",
-      },
-      {
-        id: "barbershop",
-        label: "Barbershop",
-        sublabel: "Potong, Styling, Treatment",
-        icon: Scissors,
-        color: "text-blue-500 bg-blue-50 border-blue-200",
-      },
-      {
-        id: "sport",
-        label: "Sport & Arena",
-        sublabel: "Sewa Lapangan & Alat",
-        icon: Trophy,
-        color: "text-emerald-500 bg-emerald-50 border-emerald-200",
-      },
-      {
-        id: "retail",
-        label: "Retail & Toko",
-        sublabel: "Fashion, Sembako, Gadget",
-        icon: ShoppingBag,
-        color: "text-purple-500 bg-purple-50 border-purple-200",
-      },
-    ];
 
   return (
     <div className="min-h-screen flex bg-slate-50 relative overflow-hidden">
@@ -417,14 +403,14 @@ export default function LoginPage() {
                     onChange={(e) =>
                       setRegisterForm({
                         ...registerForm,
-                        businessType: e.target.value as BusinessType,
+                        businessType: e.target.value as JenisUsaha,
                       })
                     }
                     className="block w-full pl-10 pr-9 py-2.5 bg-white border border-gray-200 rounded-xl text-xs sm:text-sm shadow-sm focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 text-gray-900 transition-all cursor-pointer appearance-none"
                   >
-                    {businessTypes.map((type) => (
-                      <option key={type.id} value={type.id}>
-                        {type.label} ({type.sublabel})
+                    {jenisUsahaList.map((type) => (
+                      <option key={type.code} value={type.code}>
+                        {type.name} {type.description ? `(${type.description})` : ''}
                       </option>
                     ))}
                   </select>
